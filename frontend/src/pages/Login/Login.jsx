@@ -11,7 +11,7 @@ const Login = () => {
         <input type="text" placeholder="Enter your username" />
         <input type="password" placeholder="Enter your password" />
         <div className="forgot-password">
-          <a href="#">Forget your password?</a>
+          <Link to ='/forgot-passoword'>Forget your password?</Link>
         </div>
         <button className="login-button">Log In</button>
         <p className="switch-text">
