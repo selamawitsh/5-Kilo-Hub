@@ -2,8 +2,14 @@ import React from 'react';
 import './Sidebar.css';
 import { FaChartBar, FaComments, FaCog } from 'react-icons/fa';
 import avatar from '../../assets/avatar.png'
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const handleSettingsClick = () => {
+    navigate("/edit-profile");
+  };
   return (
     <div className="sidebar">
       {/* Navigation Links */}
@@ -30,7 +36,7 @@ const Sidebar = () => {
             <strong className="name">Amanda</strong>
             <span className="view-profile">View profile</span>
           </div>
-          <FaCog className="settings-icon" />
+          <FaCog className="settings-icon" onClick={handleSettingsClick} />
         </div>
       </div>
     </div>
