@@ -1,0 +1,64 @@
+.detail-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  
+  .semester-block {
+    margin-bottom: 20px;
+  }
+  
+  .semester-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1d4ed8;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .subject-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 10px;
+  }
+  
+  .subject-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .subject-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .subject-text {
+    flex: 1;
+    font-size: 14px;
+    color: #111827;
+  }
+  
+  .notes-icon {
+    color: #4b5563;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .notes-icon:hover {
+    color: #1d4ed8;
+  }
+  
