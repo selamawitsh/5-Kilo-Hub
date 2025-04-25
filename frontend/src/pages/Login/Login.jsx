@@ -1,19 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Login.css';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    setFormData({...formData, [e.target.name]: e.target.value});
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:5000/api/users/login', formData);
+      alert('Login successful');
+      console.log(res.data);
+      navigate('/home');
+    } catch (error) {
+      alert(error.response?.data?.message || 'Login failed');
+    }
+  };
+
   return (
     <div className="auth-container">
       <div className="auth-box">
         <h2>Access Account</h2>
         <p className="subtitle">Access your tailored academic resources</p>
-        <input type="text" placeholder="Enter your username" />
-        <input type="password" placeholder="Enter your password" />
-        <div className="forgot-password">
-          <Link to ='/forgot-passoword'>Forget your password?</Link>
-        </div>
-        <button className="login-button">Log In</button>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            onChange={handleChange}
+            required
+          />
+          <div className="forgot-password">
+            <Link to='/forgot-password'>Forget your password?</Link>
+          </div>
+          <button type="submit" className="login-button">Log In</button>
+        </form>
         <p className="switch-text">
           Need to create an account? <Link to="/signup">Sign Up</Link>
         </p>
