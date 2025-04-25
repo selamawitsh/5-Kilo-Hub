@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import LandingPage from './pages/LandingPage/LandingPage'
 import Login from './pages/Login/Login' 
 import SignUp from './pages/Signup/Signup'
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
@@ -20,6 +21,7 @@ const App = () => {
     <UserProvider>
       <Router>
       <Routes>
+      <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp/>} />
         <Route path="/forgot-passoword" element={<ForgotPassword/>} />
