@@ -1,6 +1,8 @@
 import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import mailjet from '../config/mailjet.js'; 
 
 
 export const registerUser = async (req, res) => {
@@ -12,22 +14,69 @@ export const registerUser = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
+    const existingUsername = await User.findOne({ username });
+      if (existingUsername) {
+        return res.status(400).json({ message: 'Username already taken' });
+      }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const tokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
+      emailVerificationToken: verificationToken,
+      emailVerificationExpires: tokenExpires,
     });
 
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully', user: newUser });
+
+    // Build verification URL
+    const verificationUrl = `http://localhost:5000/api/users/verify-email?token=${verificationToken}&email=${email}`;
+
+    // Send email here using Mailjet
+    await mailjet
+    .post("send", { version: "v3.1" })
+    .request({
+      Messages: [
+        {
+          From: {
+            Email: process.env.MAILJET_SENDER,
+            Name: "5 Kilo Hub",
+          },
+          To: [
+            {
+              Email: email,
+              Name: username,
+            },
+          ],
+          Subject: "Verify your 5 Kilo Hub account",
+          HTMLPart: `
+            <h3>Welcome to 5 Kilo Hub, ${username}!</h3>
+            <p>Click the link below to verify your email:</p>
+            <a href="${verificationUrl}">Verify Email</a>
+            <p>This link expires in 24 hours.</p>
+          `,
+        },
+      ],
+    });
+
+    // For now, just log it:
+    console.log("Verification email would be sent to:", email);
+    console.log("Verification link:", verificationUrl);
+
+    res.status(201).json({
+      message: 'User registered successfully. Please check your email to verify your account.',
+    });
+
   } catch (error) {
+    console.error("Error registering user:", error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
 
 export const loginUser = async (req, res) => {
   try {
@@ -63,5 +112,32 @@ export const loginUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  const { token, email } = req.query;
+
+  try {
+    const user = await User.findOne({
+      email,
+      emailVerificationToken: token,
+      emailVerificationExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).send('Invalid or expired token.');
+    }
+
+    user.isVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+
+    //  Redirect to frontend's home page
+    res.redirect('http://localhost:5173/home'); 
+  } catch (error) {
+    console.error("Email verification error:", error);
+    res.status(500).send('Server error during email verification.');
   }
 };
