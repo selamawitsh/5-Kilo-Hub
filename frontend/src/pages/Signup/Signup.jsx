@@ -20,13 +20,17 @@ const SignUp = () => {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:5000/api/users/register', formData);
-      toast.success('User registered successfully');
+
+      alert(res.data.message); 
+
+
       console.log(res.data);
-      navigate('/home');
+      // navigate('/home'); 
     } catch (error) {
       toast.error(error.response?.data?.message || 'Error occurred');
     }
   };
+  
 
   return (
     <div className="auth-container">

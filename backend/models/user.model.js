@@ -18,10 +18,17 @@ const userSchema = new mongoose.Schema({
   profileImage: {
     type: String,
     default: '',
-  }
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationToken: String,
+  emailVerificationExpires: Date,
 }, {
   timestamps: true,
 });
 
 const User = mongoose.model('User', userSchema);
+
 export default User;
