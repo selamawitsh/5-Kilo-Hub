@@ -15,11 +15,14 @@ import civilData from './data/departmentsData/civil';
 import mechanicalData from './data/departmentsData/mechanical';
 import chemicalData from './data/departmentsData/chemical';
 import biomedicalData from './data/departmentsData/biomedical';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
     <UserProvider>
       <Router>
+      <ToastContainer position="top-center" autoClose={3000} />
       <Routes>
       <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
